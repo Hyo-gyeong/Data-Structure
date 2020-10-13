@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+//ëª¨ë“  í…ŒìŠ¤íŠ¸ì¼€ì´ìŠ¤ ëŒì•„ê°€ë„ë¡ ìˆ˜ì •!!
 
 typedef int element;
 typedef struct ListNode {
@@ -12,7 +13,7 @@ void print_list(ListNode *head)
 	ListNode *p;
 
 	if (head == NULL)
-		printf("¸®½ºÆ®°¡ ºñ¾îÀÖ½À´Ï´Ù.\n");
+		printf("ë¦¬ìŠ¤íŠ¸ê°€ ë¹„ì–´ìˆìŠµë‹ˆë‹¤.\n");
 	else {
 		for (p = head; p != NULL; p = p->link)
 			printf("%d->", p->data);
@@ -24,7 +25,7 @@ void print_list(ListNode *head)
 ListNode* insert_first(ListNode *head, int value)
 {
 	ListNode *p = (ListNode *)malloc(sizeof(ListNode));
-	p->data = value;//µû·Î ÇÏ³ª ¸¸µé°í
+	p->data = value;//ë”°ë¡œ í•˜ë‚˜ ë§Œë“¤ê³ 
 	p->link = head;
 	head = p;
 
@@ -54,7 +55,7 @@ ListNode* delete_first(ListNode *head)
 	ListNode *removed;
 
 	if (head == NULL)
-		printf("»èÁ¦ÇÒ Ç×¸ñ ¾øÀ½\n");
+		printf("ì‚­ì œí•  í•­ëª© ì—†ìŒ\n");
 	else{
 		removed = head;
 		head = removed->link;
@@ -70,7 +71,7 @@ ListNode* delete_last(ListNode *head)
 	ListNode *removed;
 
 	if(head == NULL)
-		printf("»èÁ¦ÇÒ Ç×¸ñ ¾øÀ½\n");
+		printf("ì‚­ì œí•  í•­ëª© ì—†ìŒ\n");
 	else if (head->link == NULL){
 		head = NULL;
 		free(head);
@@ -121,7 +122,7 @@ int is_in_list(ListNode *head, element item)
 	ListNode *p;
 
 	p = head;
-	while(p->link != NULL){
+	while(p != NULL){//ë¦¬ìŠ¤íŠ¸ì˜ ëê¹Œì§€ ë´ì•¼í•˜ê¸°ë•Œë¬¸ì— p->link != NULLë¡œ í•˜ë©´ ì•ˆë¨! ëì€ ëª»ë´„!
 		if (p->data == item)
 			return 1;
 		p = p->link;
@@ -132,12 +133,12 @@ int is_in_list(ListNode *head, element item)
 int get_length(ListNode *head)
 {
 	ListNode *p;
-	int count = 0;
+	int len = 0;//countë³´ë‹¤ ì¢‹ì€ ë³€ìˆ˜ì´ë¦„
 
 	for (p = head; p != NULL; p = p->link)
-		count++;
+		len++;
 
-	return count;
+	return len;
 
 }
 
@@ -151,17 +152,74 @@ int get_total(ListNode *head)
 	return total;
 }
 
-element get_entry(ListNode *head, int pos)
+element get_entry(ListNode *head, int pos) //posì˜ˆì™¸ì²˜ë¦¬ í•´ì¤˜ì•¼í•¨!
 {
 	ListNode *p = head;
 	int i;
 
-	for (i = 0; i < pos; i++)
-		p = p->link;
-	return p->data;
+	//head == NULLì¼ë•Œë„ ê³ ë ¤í•´ì•¼í•œë‹¤ë©´ ì½”ë“œí•„ìš”
+
+	//posì˜ ìœ íš¨ë²”ìœ„ :  0<= pos < get_length
+	if(pos >= get_length(head) || pos < 0){ //indexì—¬ì„œ ë“±í˜¸ ë“¤ì–´ê°
+		printf("ìœ„ì¹˜ ì˜¤ë¥˜\n");
+		return 1;//í”„ë¡œê·¸ë¨ ì¡°ê±´ì— ë§ê²Œ ë¦¬í„´ê°’ ì„¤ì •í•´ì•¼í•¨
+	}
+	else {
+		for (i = 0; i < pos; i++)
+			p = p->link;
+		return p->data;
+	}
 }
 
-ListNode* delete_by_key(ListNode *head, int key){	ListNode *p, *prevP, *removed;	int if_first = 0;	if (get_length(head) == 0){		printf("¸®½ºÆ®°¡ ºñ¾îÀÖ½À´Ï´Ù.\n");		return head;	}	else if (get_length(head) == 1){		p = head;		head = NULL;		free(p);		return head;	}	else {		p = head;		while(p->data != key){			prevP = p;			p = p->link;			if_first = 1;		}		if (if_first == 0){			head = p->link;			free(p);		}		else {			removed = p;			p = removed->link;			prevP->link = p;					free(removed);		}		return head;	}}
+ListNode* delete_pos(ListNode *head, int pos)
+{
+	ListNode *p = head, *prevP;
+	int i = 0;
+
+	if (pos < 0 || pos >= get_length(head))
+		printf("ì˜ëª»ëœ pos\n");
+	else if (pos == 0){
+		head = p->link;
+		free(p);
+	}
+	else {
+		while(i < pos){
+			prevP = p;
+			p = p->link;
+			i++;
+		}
+		prevP->link = p->link;
+		free(p);
+	}
+	return head;
+
+}
+
+ListNode* delete_by_key(ListNode *head, int key)//*****ë³µìŠµí•˜ê¸°!!
+{
+	ListNode *p = head, *prevP;
+	int index = 0;
+	
+	if (head == NULL)
+		printf("ë¦¬ìŠ¤íŠ¸ê°€ ë¹„ì–´ìˆìŠµë‹ˆë‹¤.\n");
+	else if (head->data == key){
+		head = p->link;
+		free(p);
+	}
+	else {
+		while(p != NULL){
+			if (p->data == key){
+				p = delete_pos(head, index);
+				return head;
+			}
+			p = p->link;
+			index++;
+		}
+		if (p == NULL)
+			printf("keyê°’ì´ ì—†ìŠµë‹ˆë‹¤.\n");
+	}
+	return head;
+}
 
 ListNode* insert_pos(ListNode *head, int pos, element item)
 {
@@ -170,7 +228,7 @@ ListNode* insert_pos(ListNode *head, int pos, element item)
 	temp = (ListNode *)malloc(sizeof(ListNode));
 
 	temp->data = item;
-	temp->link = NULL;//ÃÊ±âÈ­ ÇØÁà¾ßÇÔ
+	temp->link = NULL;//ì´ˆê¸°í™” í•´ì¤˜ì•¼í•¨
 
 	if (pos == 0){
 		temp->link = p;
@@ -187,30 +245,6 @@ ListNode* insert_pos(ListNode *head, int pos, element item)
 		prevP->link = temp;
 		return head;
 	}
-}
-
-ListNode* delete_pos(ListNode *head, int pos)
-{
-	ListNode *p = head, *prevP;
-	int i = 0;
-
-	if (pos == 0){
-		head = p->link;
-		free(p);
-	}
-	else {
-		while(i < pos){
-			prevP = p;
-			p = p->link;
-			i++;
-		}
-		printf("p = %d", p->data);
-		printf("prev = %d   ", prevP->data);
-		prevP->link = p->link;
-		free(p);
-	}
-	return head;
-
 }
 
 int main(void)
@@ -248,33 +282,33 @@ int main(void)
 	printf("concat list1, list3: ");
 	print_list(list1);
 
-	printf("33Àº ");
+	printf("33ì€ ");
 	if (is_in_list(list1, 33))
-		printf("list1¿¡ ÀÖ½À´Ï´Ù.\n");
+		printf("list1ì— ìˆìŠµë‹ˆë‹¤.\n");
 	else
-		printf("list1¿¡ ¾ø½À´Ï´Ù.\n");
+		printf("list1ì— ì—†ìŠµë‹ˆë‹¤.\n");
 
 	printf("\n");
 	printf("list1 : ");
 	print_list(list1);
-	printf("list1ÀÇ ±æÀÌ´Â %d\n",get_length(list1));
-	printf("list1ÀÇ µ¥ÀÌÅÍ ÇÕÀº %d\n",get_total(list1));
-	printf("list1ÀÇ 3¹øÂ° µ¥ÀÌÅÍ´Â %d\n", get_entry(list1, 2));
+	printf("list1ì˜ ê¸¸ì´ëŠ” %d\n",get_length(list1));
+	printf("list1ì˜ ë°ì´í„° í•©ì€ %d\n",get_total(list1));
+	printf("list1ì˜ 3ë²ˆì§¸ ë°ì´í„°ëŠ” %d\n", get_entry(list1, 2));
 	printf("\n");
 	printf("list2 : ");
 	print_list(list2);
-	printf("list2ÀÇ ±æÀÌ´Â %d\n",get_length(list2));
-	printf("list2ÀÇ µ¥ÀÌÅÍ ÇÕÀº %d\n",get_total(list2));
-	printf("list2ÀÇ 1¹øÂ° µ¥ÀÌÅÍ´Â %d\n", get_entry(list2, 0));
+	printf("list2ì˜ ê¸¸ì´ëŠ” %d\n",get_length(list2));
+	printf("list2ì˜ ë°ì´í„° í•©ì€ %d\n",get_total(list2));
+	printf("list2ì˜ 1ë²ˆì§¸ ë°ì´í„°ëŠ” %d\n", get_entry(list2, 0));
 	printf("\n");
 	printf("list3 : ");
 	print_list(list3);
-	printf("list3ÀÇ ±æÀÌ´Â %d\n",get_length(list3));
-	printf("list3ÀÇ µ¥ÀÌÅÍ ÇÕÀº %d\n",get_total(list3));
-	printf("list3ÀÇ 2¹øÂ° µ¥ÀÌÅÍ´Â %d\n", get_entry(list3, 1));
+	printf("list3ì˜ ê¸¸ì´ëŠ” %d\n",get_length(list3));
+	printf("list3ì˜ ë°ì´í„° í•©ì€ %d\n",get_total(list3));
+	printf("list3ì˜ 2ë²ˆì§¸ ë°ì´í„°ëŠ” %d\n", get_entry(list3, 1));
 
-	printf("list1ÀÇ 20Á¦°ÅÇÑ ÈÄ: ");
-	list1 = delete_by_key(list1, 20);
+	printf("list1ì˜ 20ì œê±°í•œ í›„: ");
+	list1 = delete_by_key(list1, 11);
 	print_list(list1);
 
 	printf("insert 80: ");
@@ -282,6 +316,6 @@ int main(void)
 	print_list(list1);
 
 	printf("delete index 2: ");
-	list1 = delete_pos(list1, 2);
+	list1 = delete_pos(list1, 4);
 	print_list(list1);
 }
